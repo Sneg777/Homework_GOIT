@@ -2,5 +2,9 @@ sats,8888
 nina,8585
 bob,95959
 gleb,95988581441
-scoba,12121
+scoba,1212
 stasik,95695959
+georg,5225
+jime,051234356
+vanya,85858
+522,525

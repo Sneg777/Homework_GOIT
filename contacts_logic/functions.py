@@ -1,5 +1,5 @@
 import pathlib
-
+from typing import Callable
 current_dir = pathlib.Path(__file__).parent.absolute()
 def read_contacts_from_file(): # Читає файл порядково, видаляючи непотрібні пробіли, як роздільник є ','
     contacts = {}
@@ -11,29 +11,53 @@ def read_contacts_from_file(): # Читає файл порядково, вид�
 
         return contacts
     except FileNotFoundError:
-        print('File dose not exist or damaged')
+        print('File dose not exist or damaged.')
+
 def file_writer(contacts: dict): # Відкриває файл та записує в нього надану інформацію
     try:
         with open(current_dir/ 'contacts.txt', 'w', encoding='utf-8') as file:
                 for name, phone in contacts.items():
                     file.write(f'{name},{phone}\n')
     except FileNotFoundError:
-        print('File Not Found')
+        print('File Not Found.')
 
+def input_error_exist_user(func: Callable) -> Callable:
 
+    def inner(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except IndexError:
+            return 'Please, enter the user name after command.'
+    return inner
+@input_error_exist_user
 def phone_username(args, contacts): # Функція для виведення вже створеного контакту, command == 'phone'
     name = args[0].lower()
     if name in contacts:
         return f'{name} phone is {contacts[name]}'
     else:
-        return f'{name} does not exist'
+        return f'{name} does not exist.'
 
+def input_error_add(func: Callable) -> Callable:
+    def inner(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except ValueError:
+            return 'Please, enter the argument for the command.'
+    return inner
+@input_error_add
 def add_contact(args, contacts): # Функція для додавання нового контакту, command == 'add'
     name, phone = args
     contacts[name.lower()] = phone
     file_writer(contacts)
     return "Contact added."
-
+def input_error_change(func: Callable) -> Callable:
+    def inner(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except (ValueError):
+            return 'Please, enter the user name and phone after command.'
+    return inner
+@input_error_change
 def change_contact(args, contacts): # Функція для зміни номера телефону, command == 'change'
     name, new_phone = args
     if name.lower() in contacts:
@@ -41,4 +65,4 @@ def change_contact(args, contacts): # Функція для зміни номе�
         file_writer(contacts)
         return f'Contact {name} has been changed.'
     else:
-        return f"Contact {name} not found"
+        return f"Contact {name} not found."

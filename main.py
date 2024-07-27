@@ -1,5 +1,17 @@
 from contacts_logic import *
 
+def input_error_parse(func):
+    def inner(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except IndexError:
+            return 'Please enter a command followed by arguments.'
+        except AttributeError:
+            return 'Invalid input. Please enter a string.'
+        except ValueError:
+            return 'Empty input. Please enter a command.'
+    return inner
+@input_error_parse
 def parse_input(user_input):
     cmd, *args = user_input.split()
     cmd = cmd.strip().lower()
