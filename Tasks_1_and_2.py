@@ -26,7 +26,7 @@ import re
 text = "Загальний дохід працівника складається з декількох частин: 1000.01 як основний дохід, доповнений додатковими надходженнями 27.45 і 324.00 доларів."
 
 def generator_numbers(text: str):
-    pattern = r'[+-]?\d*\.?\d+(?:[eE][+-]?\d+)?'
+    pattern = r'\d+\.\d+|\d+'
     numbers = re.findall(pattern, text)
     for number in numbers:
         yield float(number)

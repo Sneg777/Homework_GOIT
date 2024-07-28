@@ -8,3 +8,5 @@ georg,5225
 jime,051234356
 vanya,85858
 522,525
+ujuj,1212
+karolina,1212

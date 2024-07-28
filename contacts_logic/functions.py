@@ -21,15 +21,19 @@ def file_writer(contacts: dict): # Відкриває файл та запису
     except FileNotFoundError:
         print('File Not Found.')
 
-def input_error_exist_user(func: Callable) -> Callable:
+def input_error(func: Callable) -> Callable: # Decorator for catching errors in functions
 
     def inner(*args, **kwargs):
         try:
             return func(*args, **kwargs)
         except IndexError:
-            return 'Please, enter the user name after command.'
+            return 'Please enter a command followed by arguments.'
+        except AttributeError:
+            return 'Invalid input. Please enter a string.'
+        except ValueError:
+            return 'Please enter a command followed by arguments.'
     return inner
-@input_error_exist_user
+@input_error
 def phone_username(args, contacts): # Функція для виведення вже створеного контакту, command == 'phone'
     name = args[0].lower()
     if name in contacts:
@@ -37,27 +41,15 @@ def phone_username(args, contacts): # Функція для виведення �
     else:
         return f'{name} does not exist.'
 
-def input_error_add(func: Callable) -> Callable:
-    def inner(*args, **kwargs):
-        try:
-            return func(*args, **kwargs)
-        except ValueError:
-            return 'Please, enter the argument for the command.'
-    return inner
-@input_error_add
+
+@input_error
 def add_contact(args, contacts): # Функція для додавання нового контакту, command == 'add'
     name, phone = args
     contacts[name.lower()] = phone
     file_writer(contacts)
     return "Contact added."
-def input_error_change(func: Callable) -> Callable:
-    def inner(*args, **kwargs):
-        try:
-            return func(*args, **kwargs)
-        except (ValueError):
-            return 'Please, enter the user name and phone after command.'
-    return inner
-@input_error_change
+
+@input_error
 def change_contact(args, contacts): # Функція для зміни номера телефону, command == 'change'
     name, new_phone = args
     if name.lower() in contacts:
